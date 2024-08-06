@@ -1,0 +1,26 @@
+import { User } from 'lucide-react';
+
+export default function AccountUser() {
+    return (
+        <div className="w-full flex p-4 rounded-lg bg-[var(--sub-alt-color)]">
+            <div className="flex items-center gap-4 pr-4">
+                <User className="p-1 text-[var(--sub-alt-color)] bg-[var(--sub-color)] sm:w-14 sm:h-14 rounded-full" />
+                <div>
+                    <h1 className="sm:text-2xl">PhanBaNhat</h1>
+                    <span className="text-xs text-[var(--sub-color)]">05 -04 - 2024</span>
+                </div>
+            </div>
+            <div className="border-2 rounded-lg border-[var(--bg-color)]"></div>
+            <div className="pl-4 flex-1 flex justify-around">
+                <div className="">
+                    <h3 className="text-[var(--sub-color)]">total post</h3>
+                    <span className="text-[var(--text-color)] sm:text-2xl">0</span>
+                </div>
+                <div className="">
+                    <h3 className="text-[var(--sub-color)]">total like</h3>
+                    <span className="text-[var(--text-color)] sm:text-2xl">0</span>
+                </div>
+            </div>
+        </div>
+    );
+}

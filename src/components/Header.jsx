@@ -10,9 +10,9 @@ export default function Header() {
                     <h1 className="text-[--text-color] leading-none">F16s</h1>
                 </div>
             </Link>
-            <div>
+            <Link to={'/account'}>
                 <User />
-            </div>
+            </Link>
         </div>
     );
 }
