@@ -10,7 +10,7 @@ export default function CheckSizeImg({ img }) {
     };
 
     return (
-        <div className="h-72 sm:h-96">
+        <div className="h-72 sm:h-80 md:h-96">
             <img
                 onLoad={handleImageLoad}
                 className={`${

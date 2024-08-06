@@ -1,4 +1,4 @@
-import { Activity, User } from 'lucide-react';
+import { Activity, LogOut, User, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
@@ -10,9 +10,22 @@ export default function Header() {
                     <h1 className="text-[--text-color] leading-none">F16s</h1>
                 </div>
             </Link>
-            <Link to={'/account'}>
+            {/* <Link to={'/authentication'}>
                 <User />
-            </Link>
+            </Link> */}
+            <div className="flex items-end gap-8 text-[var(--sub-color)]">
+                <Link
+                    to={'/account'}
+                    className="flex items-end gap-2 hover:text-[var(--text-color)] duration-200"
+                >
+                    <UserCheck className="w-5 h-5" />
+                    <span className="leading-none">PhanBaNhat</span>
+                </Link>
+
+                <button className="hover:text-[var(--text-color)] duration-200">
+                    <LogOut className="w-5 h-5" />
+                </button>
+            </div>
         </div>
     );
 }

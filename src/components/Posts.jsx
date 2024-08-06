@@ -50,11 +50,9 @@ export default function Posts() {
                     <div>
                         <span className="text-xs">Post title</span>
                     </div>
-                    <div className="h-72 sm:h-96">
-                        <CheckSizeImg img={img} />
-                    </div>
+                    <CheckSizeImg img={img} />
                     <div className="flex gap-4 items-center justify-between">
-                        <button className="flex items-center gap-2 text-[var(--sub-color)] hover:text-[var(--text-color)]">
+                        <button className="flex items-end gap-2 text-[var(--sub-color)] hover:text-[var(--text-color)]">
                             <ThumbsUp className="hover:origin-bottom hover:-rotate-12 active: duration-300" />
                             <span className="text-xs duration-300">10</span>
                         </button>
