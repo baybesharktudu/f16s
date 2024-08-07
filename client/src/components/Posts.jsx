@@ -58,7 +58,7 @@ export default function Posts() {
                         </button>
                     </div>
                     <button className="absolute top-4 right-4">
-                        <Trash className="w-4 h-4 text-[var(--colorful-error-color)]" />
+                        <Trash className="w-5 h-5 hover:scale-110 duration-300 text-[var(--colorful-error-color)]" />
                     </button>
                 </div>
             ))}

@@ -46,24 +46,24 @@ export default function CreatePost() {
                             <button
                                 type="button"
                                 onClick={() => fileRef.current.click()}
-                                className="p-2 bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] rounded-lg duration-300"
+                                className="p-2 bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] text-[var(--main-color)] hover:text-[var(--sub-alt-color)] rounded-lg duration-300"
                             >
-                                <FilePlus2 className="text-[var(--main-color)] hover:text-[var(--sub-alt-color)]" />
+                                <FilePlus2 />
                             </button>
                             {picCreate && (
                                 <div className="duration-300 flex items-end gap-2 text-xs text-[var(--sub-color)] ">
                                     <span className="leading-none">Add photo successfully</span>
                                     <button type="button" onClick={() => setPicCreate(null)}>
-                                        <X className="w-4 h-4 text-[var(--error-color)]" />
+                                        <X className="w-4 h-4 hover:scale-125 duration-300 text-[var(--error-color)]" />
                                     </button>
                                 </div>
                             )}
                             <div className="flex-1 flex justify-end">
                                 <button
                                     type="submit"
-                                    className="duration-300 bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] rounded-lg p-2"
+                                    className="duration-300 bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] text-[var(--main-color)] hover:text-[var(--sub-alt-color)] rounded-lg p-2"
                                 >
-                                    <PencilRuler className="duration-300 text-[var(--main-color)] hover:text-[var(--sub-alt-color)]" />
+                                    <PencilRuler />
                                 </button>
                             </div>
                         </div>
@@ -80,7 +80,7 @@ export default function CreatePost() {
             <button
                 type="button"
                 onClick={() => setOnModal(!onModal)}
-                className="duration-300 ease-linear transition-all p-2 bg-[var(--sub-alt-color)] rounded-lg hover:text-[var(--sub-alt-color)] hover:bg-[var(--text-color)]"
+                className="duration-300 p-2 rounded-lg bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] text-[var(--main-color)] hover:text-[var(--sub-alt-color)]"
             >
                 <PencilRuler />
             </button>
