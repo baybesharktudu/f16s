@@ -7,12 +7,23 @@ const postSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
+        username: {
+            type: String,
+            required: true,
+        },
         title: {
             type: String,
         },
         picturePost: {
             type: String,
         },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Like',
+                default: [],
+            },
+        ],
     },
     { timestamps: true },
 );

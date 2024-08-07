@@ -35,7 +35,7 @@ export default function Account() {
     return (
         <div className="flex-1 flex flex-col gap-4">
             <AccountUser account={account} />
-            <Posts />
+            <Posts posts={account.posts} />
             <CreatePost />
         </div>
     );

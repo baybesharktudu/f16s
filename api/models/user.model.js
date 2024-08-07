@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
             required: true,
         },
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: [] }],
+        likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like', default: [] }],
     },
     { timestamps: true },
 );

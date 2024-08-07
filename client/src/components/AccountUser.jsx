@@ -17,7 +17,9 @@ export default function AccountUser({ account }) {
             <div className="pl-4 flex-1 flex justify-around">
                 <div className="">
                     <h3 className="text-[var(--sub-color)]">total post</h3>
-                    <span className="text-[var(--text-color)] sm:text-2xl">0</span>
+                    <span className="text-[var(--text-color)] sm:text-2xl">
+                        {account.posts.length}
+                    </span>
                 </div>
                 <div className="">
                     <h3 className="text-[var(--sub-color)]">total like</h3>
