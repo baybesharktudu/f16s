@@ -1,24 +1,38 @@
 import { LogIn } from 'lucide-react';
 import OAuthGoogleButton from './OAuthGoogleButton';
 import OAuthFacebookButton from './OAuthFacebookButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice';
 
 export default function SignIn() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
 
-    const [error, setError] = useState('');
-    const [data, setData] = useState({});
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            dispatch(signInFailure(''));
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    const { loading, error } = useSelector((state) => state.user);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.email || !formData.password) return setError('Fill in all fields');
+        if (!formData.email || !formData.password)
+            return dispatch(signInFailure('Fill in all fields'));
 
         try {
+            dispatch(signInStart());
             const res = await fetch('/api/auth/signin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -27,15 +41,14 @@ export default function SignIn() {
 
             const data = await res.json();
 
-            if (!res.ok) {
-                setData({});
-                return setError(data.message);
+            if (data.success === false) {
+                return dispatch(signInFailure(data.message));
             }
 
-            setData(data);
+            dispatch(signInSuccess(data));
             navigate('/');
         } catch (error) {
-            console.error(error);
+            dispatch(signInFailure(error.message));
         }
     };
 
@@ -73,17 +86,19 @@ export default function SignIn() {
                     type="submit"
                     className="hover:bg-[var(--text-color)] duration-300 hover:text-[var(--sub-alt-color)] text-[var(--text-color)] w-full flex justify-center items-start gap-1 py-2 px-3 rounded-lg bg-[var(--sub-alt-color)]"
                 >
-                    <LogIn className="w-4 h-4" />
-                    <span>sign in</span>
+                    {loading && <span>loading...</span>}
+                    {!loading && (
+                        <>
+                            <LogIn className="w-4 h-4" />
+                            <span>sign in</span>
+                        </>
+                    )}
                 </button>
             </form>
             <div className="flex justify-between text-xs">
                 <div className="flex-1">
                     {error && (
                         <span className="duration-300 text-[var(--error-color)]">{error}</span>
-                    )}
-                    {data.message && (
-                        <span className="duration-300 text-green-600">{data.message}</span>
                     )}
                 </div>
                 <button
