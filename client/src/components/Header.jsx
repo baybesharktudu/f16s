@@ -1,9 +1,32 @@
 import { Activity, LogOut, User, UserCheck } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { signoutSuccess } from '../redux/user/userSlice';
 
 export default function Header() {
     const { currentUser } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const handleSignout = async () => {
+        try {
+            const res = await fetch('/api/user/signout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                dispatch(signoutSuccess());
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
     return (
         <div className="flex justify-between items-center">
             <Link to="/">
@@ -22,7 +45,11 @@ export default function Header() {
                         <span className="leading-none">{currentUser.username}</span>
                     </Link>
 
-                    <button className="hover:text-[var(--text-color)] duration-200">
+                    <button
+                        type="button"
+                        onClick={handleSignout}
+                        className="hover:text-[var(--text-color)] duration-200"
+                    >
                         <LogOut className="w-5 h-5" />
                     </button>
                 </div>

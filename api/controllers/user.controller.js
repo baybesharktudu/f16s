@@ -16,9 +16,10 @@ export const account = async (req, res, next) => {
     }
 };
 
-export const post = async (req, res, next) => {
+export const signout = async (req, res, next) => {
     try {
-        const listPost = await Post.find();
-        res.status(200).json(listPost);
-    } catch (error) {}
+        res.clearCookie('access_token').status(200).json('User has been signed out');
+    } catch (error) {
+        next(error);
+    }
 };
