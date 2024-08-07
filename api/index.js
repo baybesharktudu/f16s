@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 // import file
 import authRoute from './routes/auth.route.js';
+import userRoute from './routes/user.route.js';
 
 // config
 dotenv.config();
@@ -27,6 +28,7 @@ app.listen(PORT, () => {
 
 // route
 app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
 
 // handle error
 app.use((err, req, res, next) => {

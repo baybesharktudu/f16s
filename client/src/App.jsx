@@ -15,7 +15,7 @@ export default function App() {
                 <Header />
                 <Routes>
                     <Route element={<PrivateRoute />}>
-                        <Route path="/account" element={<Account />} />
+                        <Route path="/account/:id" element={<Account />} />
                         <Route path="/" element={<Home />} />
                     </Route>
                     <Route element={<PrivateAuthentication />}>

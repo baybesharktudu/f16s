@@ -1,13 +1,16 @@
 import { User } from 'lucide-react';
+import moment from 'moment';
 
-export default function AccountUser() {
+export default function AccountUser({ account }) {
     return (
         <div className="w-full flex p-4 rounded-lg bg-[var(--sub-alt-color)]">
             <div className="flex items-center gap-4 pr-4">
                 <User className="p-1 text-[var(--sub-alt-color)] bg-[var(--sub-color)] sm:w-14 sm:h-14 rounded-full" />
                 <div>
-                    <h1 className="sm:text-2xl">PhanBaNhat</h1>
-                    <span className="text-xs text-[var(--sub-color)]">05 -04 - 2024</span>
+                    <h1 className="sm:text-2xl">{account.username}</h1>
+                    <span className="text-xs text-[var(--sub-color)]">
+                        {moment(account.createdAt).format('DD-MM-YYYY')}
+                    </span>
                 </div>
             </div>
             <div className="border-2 rounded-lg border-[var(--bg-color)]"></div>

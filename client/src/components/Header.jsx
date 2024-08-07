@@ -15,7 +15,7 @@ export default function Header() {
             {currentUser && (
                 <div className="flex items-end gap-8 text-[var(--sub-color)]">
                     <Link
-                        to={'/account'}
+                        to={`/account/${currentUser._id}`}
                         className="flex items-end gap-2 hover:text-[var(--text-color)] duration-200"
                     >
                         <UserCheck className="w-5 h-5" />
