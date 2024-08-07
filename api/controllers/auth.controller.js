@@ -9,19 +9,21 @@ export const signin = async (req, res, next) => {
     // if (!email || !password) return next(errorHandler(404, 'Fill in all fields'));
 
     try {
-        const validUser = await User.findOne({ email });
+        setTimeout(async () => {
+            const validUser = await User.findOne({ email });
 
-        if (!validUser) return next(errorHandler(404, 'User not found'));
+            if (!validUser) return next(errorHandler(404, 'User not found'));
 
-        const validPassword = bcryptjs.compareSync(password, validUser.password);
+            const validPassword = bcryptjs.compareSync(password, validUser.password);
 
-        if (!validPassword) return next(errorHandler(404, 'Invalid password'));
+            if (!validPassword) return next(errorHandler(404, 'Invalid password'));
 
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
 
-        const { password: pass, ...rest } = validUser._doc;
+            const { password: pass, ...rest } = validUser._doc;
 
-        res.status(200).cookie('access_token', token, { httpOnly: true }).json(rest);
+            res.status(200).cookie('access_token', token, { httpOnly: true }).json(rest);
+        }, 1000);
     } catch (error) {
         next(error);
     }
@@ -33,20 +35,25 @@ export const signup = async (req, res, next) => {
     if (!username || !email || !password) return next(errorHandler(404, 'Fill in all fields'));
 
     try {
-        const user = await User.findOne({ $or: [{ email }, { username }] });
+        setTimeout(async () => {
+            const user = await User.findOne({ $or: [{ email }, { username }] });
 
-        if (user) return next(errorHandler(404, 'Account already exists'));
+            if (user) return next(errorHandler(404, 'Account already exists'));
 
-        const hashedPassword = bcryptjs.hashSync(password, 10);
+            const hashedPassword = bcryptjs.hashSync(password, 10);
 
-        const newUser = await new User({
-            username,
-            email,
-            password: hashedPassword,
-        });
-
-        await newUser.save();
-        res.status(200).json({ success: true, statusCode: 200, message: 'Signup successfuly!' });
+            const newUser = await new User({
+                username,
+                email,
+                password: hashedPassword,
+            });
+            await newUser.save();
+            res.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Signup successfuly!',
+            });
+        }, 1000);
     } catch (error) {
         next(error);
     }

@@ -9,12 +9,19 @@ export default function SignUp() {
     });
 
     const [error, setError] = useState('');
-    const [data, setData] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState(null);
+    console.log(loading);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!formData.username || !formData.email || !formData.password) {
+            return setError('Fill in all fields');
+        }
+
         try {
+            setLoading(true);
             const res = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -24,10 +31,12 @@ export default function SignUp() {
             const data = await res.json();
 
             if (!res.ok) {
+                setLoading(false);
                 setData({});
                 return setError(data.message);
             }
 
+            setLoading(false);
             setData(data);
             setError('');
             setFormData({
@@ -35,6 +44,9 @@ export default function SignUp() {
                 email: '',
                 password: '',
             });
+            setTimeout(() => {
+                setData({});
+            }, 5000);
         } catch (error) {
             console.error(error);
         }
@@ -82,15 +94,18 @@ export default function SignUp() {
                     type="submit"
                     className={`hover:bg-[var(--text-color)] duration-300 hover:text-[var(--sub-alt-color)] text-[var(--text-color)] bg-[var(--sub-alt-color)] w-full flex justify-center items-start gap-1 py-2 px-3 rounded-lg `}
                 >
-                    <UserPlus className="w-4 h-4" />
-                    <span>sign up</span>
+                    {loading && <span>loading...</span>}
+                    {!loading && (
+                        <>
+                            <UserPlus className="w-4 h-4" />
+                            <span>sign up</span>
+                        </>
+                    )}
                 </button>
             </form>
             <div className="h-4">
                 {error && <span className="duration-300 text-[var(--error-color)]">{error}</span>}
-                {data.message && (
-                    <span className="duration-300 text-green-600">{data.message}</span>
-                )}
+                {data && <span className="duration-300 text-green-600">{data.message}</span>}
             </div>
         </div>
     );
