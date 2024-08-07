@@ -2,12 +2,11 @@ import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { errorHandler } from '../utils/error.js';
-import mongoose from 'mongoose';
 
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
 
-    if (!email || !password) return next(errorHandler(404, 'Fill in all fields'));
+    // if (!email || !password) return next(errorHandler(404, 'Fill in all fields'));
 
     try {
         const validUser = await User.findOne({ email });
@@ -50,49 +49,5 @@ export const signup = async (req, res, next) => {
         res.status(200).json({ success: true, statusCode: 200, message: 'Signup successfuly!' });
     } catch (error) {
         next(error);
-    }
-};
-
-export const signupQuery = async (req, res, next) => {
-    const { username } = req.query;
-
-    if (username) {
-        try {
-            const findUsername = await User.findOne({ username });
-
-            setTimeout(() => {
-                if (findUsername) return next(errorHandler(404, 'username already exists'));
-
-                res.status(200).json({
-                    success: true,
-                    statusCode: 200,
-                    message: 'username does not exist',
-                });
-            }, 100);
-        } catch (error) {
-            next(error);
-        }
-    }
-};
-
-export const signupQueryEmail = async (req, res, next) => {
-    const { email } = req.query;
-
-    if (email) {
-        try {
-            const findEmail = await User.findOne({ email });
-
-            setTimeout(() => {
-                if (findEmail) return next(errorHandler(404, 'email already exists'));
-
-                res.status(200).json({
-                    success: true,
-                    statusCode: 200,
-                    message: 'email does not exist',
-                });
-            }, 100);
-        } catch (error) {
-            next(error);
-        }
     }
 };
