@@ -18,7 +18,7 @@ export default function SignIn() {
                 <span className="text-[var(--text-color)]">or</span>
                 <div className="h-1 rounded-lg w-full bg-[var(--sub-alt-color)]"></div>
             </div>
-            <form className="flex flex-col gap-3">
+            <form className="flex flex-col gap-3 text-[var(--text-color)]">
                 <input
                     className="w-full py-2 px-3 rounded-lg bg-[var(--sub-alt-color)] placeholder:text-[var(--sub-color)]  focus:outline-none focus:outline-[var(--text-color)]"
                     placeholder="email"
