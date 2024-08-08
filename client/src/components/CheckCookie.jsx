@@ -7,7 +7,7 @@ export default function CheckCookie() {
     return (
         <div className="flex-1 flex flex-col justify-center items-center rounded-lg">
             <div className="flex flex-col gap-5">
-                <h1 className="text-[var(--error-color)] text-xl">Please sign in again.</h1>
+                <h1 className="text-[var(--error-color)] text-lg">Please sign in again.</h1>
                 <button
                     onClick={() => dispatch(signoutSuccess())}
                     type="button"

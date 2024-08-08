@@ -16,7 +16,7 @@ export default function CheckSizeImg({ img }) {
                 className={`${
                     height > width ? 'object-contain bg-[var(--bg-color)]' : 'object-cover'
                 } w-full h-full rounded-lg`}
-                src={img.image}
+                src={img}
                 alt=""
             />
         </div>

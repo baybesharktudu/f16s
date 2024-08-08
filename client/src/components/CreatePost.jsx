@@ -1,11 +1,15 @@
 import { FilePlus2, Minimize2, PencilRuler, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase.js';
+import { useDispatch } from 'react-redux';
+import { createPostFailure, createPostStart, createPostSucces } from '../redux/post/postSlice.js';
 
 export default function CreatePost() {
+    const dispatch = useDispatch();
     const [onModal, setOnModal] = useState(false);
     const [picCreate, setPicCreate] = useState(null);
+    const [imageDown, setImageDown] = useState(null);
     const fileRef = useRef();
 
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
@@ -21,6 +25,7 @@ export default function CreatePost() {
 
     const change = async (downloadURL) => {
         try {
+            dispatch(createPostStart());
             const res = await fetch('/api/post/create', {
                 method: 'POST',
                 headers: {
@@ -30,11 +35,18 @@ export default function CreatePost() {
             });
             const data = await res.json();
 
+            if (!res.ok) {
+                dispatch(createPostFailure(error.message));
+            }
+
             if (res.ok) {
                 setOnModal(false);
+                setImageDown(null);
+                setPicCreate(null);
+                dispatch(createPostSucces(data));
             }
         } catch (error) {
-            console.error(error);
+            dispatch(createPostFailure(error.message));
         }
     };
 
@@ -65,6 +77,7 @@ export default function CreatePost() {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         setImageUploadProgress(null);
                         setImageUploadError(null);
+                        setImageDown(downloadURL);
                         change(downloadURL);
                     });
                 },
@@ -76,11 +89,16 @@ export default function CreatePost() {
         }
     };
 
+    const handleCloseModal = () => {
+        setOnModal(false);
+        setPicCreate(null);
+    };
+
     return (
         <div className="fixed right-10 bottom-10">
             {onModal && (
                 <div
-                    onClick={() => setOnModal(!onModal)}
+                    onClick={handleCloseModal}
                     className="duration-300 flex flex-col justify-center items-center backdrop-blur-[1px] ease-in-out transition-all fixed top-0 right-0 left-0 bottom-0 bg-black/10  "
                 >
                     <form
@@ -88,7 +106,7 @@ export default function CreatePost() {
                         onSubmit={handleSubmit}
                         className={`relative flex duration-1000 transition-all ease-linear flex-col gap-4 rounded-lg p-4 w-10/12 border-2 border-[var(--text-color)] sm:w-96 lg:w-[500px] bg-[var(--bg-color)]`}
                     >
-                        <h1 className="text-[var(--main-color)]">create a post</h1>
+                        <h1 className="text-[var(--main-color)] text-lg">create a post</h1>
                         <textarea
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             spellCheck={false}
@@ -113,8 +131,27 @@ export default function CreatePost() {
                             {picCreate && (
                                 <div className="duration-300 flex items-end gap-2 text-xs text-[var(--sub-color)] ">
                                     <span className="leading-none">Add photo successfully</span>
-                                    <button type="button" onClick={() => setPicCreate(null)}>
+                                    <button
+                                        className="flex gap-2 items-end"
+                                        type="button"
+                                        onClick={() => setPicCreate(null)}
+                                    >
                                         <X className="w-4 h-4 hover:scale-125 duration-300 text-[var(--error-color)]" />
+                                        {imageUploadProgress && (
+                                            <span className="leading-none text-[--main-color]">
+                                                {imageUploadProgress}%
+                                            </span>
+                                        )}
+                                        {imageUploadError && (
+                                            <span className="text-[--error-color] leading-none">
+                                                {imageUploadError}
+                                            </span>
+                                        )}{' '}
+                                        {imageDown && (
+                                            <span className="text-green-600 leading-none">
+                                                upload successfully
+                                            </span>
+                                        )}
                                     </button>
                                 </div>
                             )}
@@ -130,7 +167,7 @@ export default function CreatePost() {
                         <button
                             type="button"
                             className="duration-300 absolute transition-all ease-in-out hover:scale-125 top-4 right-4"
-                            onClick={() => setOnModal(!onModal)}
+                            onClick={handleCloseModal}
                         >
                             <Minimize2 className="w-5 h-5 text-[var(--error-color)]" />
                         </button>
@@ -139,7 +176,7 @@ export default function CreatePost() {
             )}
             <button
                 type="button"
-                onClick={() => setOnModal(!onModal)}
+                onClick={() => setOnModal(true)}
                 className="duration-300 p-2 rounded-lg bg-[var(--sub-alt-color)] hover:bg-[var(--main-color)] text-[var(--main-color)] hover:text-[var(--sub-alt-color)]"
             >
                 <PencilRuler />

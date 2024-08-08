@@ -19,8 +19,21 @@ export const create = async (req, res, next) => {
     });
 
     try {
-        const savedPost = await newPost.save();
-        res.status(201).json(savedPost);
+        setTimeout(async () => {
+            const savedPost = await newPost.save();
+            res.status(201).json(savedPost);
+        }, 1000);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getposts = async (req, res, next) => {
+    try {
+        setTimeout(async () => {
+            const posts = await Post.find().sort({ createdAt: -1 });
+            res.status(201).json(posts);
+        }, 1000);
     } catch (error) {
         next(error);
     }
