@@ -1,10 +1,16 @@
 import { FilePlus2, Minimize2, PencilRuler, X } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../firebase.js';
 
 export default function CreatePost() {
     const [onModal, setOnModal] = useState(false);
     const [picCreate, setPicCreate] = useState(null);
     const fileRef = useRef();
+
+    const [imageUploadProgress, setImageUploadProgress] = useState(null);
+    const [imageUploadError, setImageUploadError] = useState(null);
+    const [formData, setFormData] = useState({});
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -13,8 +19,61 @@ export default function CreatePost() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const change = async (downloadURL) => {
+        try {
+            const res = await fetch('/api/post/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ...formData, picturePost: downloadURL }),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                setOnModal(false);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        try {
+            if (!picCreate) {
+                setImageUploadError('Please select an image');
+                return;
+            }
+            setImageUploadError(null);
+            const storage = getStorage(app);
+            const fileName = new Date().getTime() + '-' + picCreate.name;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, picCreate);
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setImageUploadProgress(progress.toFixed(0));
+                },
+                (error) => {
+                    setImageUploadError('Image upload failed');
+                    setImageUploadProgress(null);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        setImageUploadProgress(null);
+                        setImageUploadError(null);
+                        change(downloadURL);
+                    });
+                },
+            );
+        } catch (error) {
+            setImageUploadError('Image upload failed');
+            setImageUploadProgress(null);
+            console.log(error);
+        }
     };
 
     return (
@@ -31,6 +90,7 @@ export default function CreatePost() {
                     >
                         <h1 className="text-[var(--main-color)]">create a post</h1>
                         <textarea
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             spellCheck={false}
                             placeholder="Create something..."
                             className="resize-none scroll-post w-full h-32 placeholder:text-[var(--sub-color)] rounded-lg bg-[var(--sub-alt-color)] text-sm p-4 focus:outline-none"

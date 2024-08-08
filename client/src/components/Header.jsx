@@ -15,10 +15,11 @@ export default function Header() {
                     'Content-Type': 'application/json',
                 },
             });
-            const data = await res.json();
 
             if (!res.ok) {
-                console.log(data.message);
+                if (res.status === 401) {
+                    dispatch(signoutSuccess());
+                }
             } else {
                 dispatch(signoutSuccess());
             }
