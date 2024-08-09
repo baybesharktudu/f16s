@@ -38,3 +38,15 @@ export const getposts = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getpostAccount = async (req, res, next) => {
+    try {
+        setTimeout(async () => {
+            const posts = await Post.find({ userId: req.params.id }).sort({ createdAt: -1 });
+
+            res.status(201).json(posts);
+        }, 1000);
+    } catch (error) {
+        next(error);
+    }
+};

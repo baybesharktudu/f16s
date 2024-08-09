@@ -10,6 +10,8 @@ export default function Account() {
     const { id } = useParams();
     const [account, setAccount] = useState(null);
     const [cookie, setCookie] = useState(false);
+    const [data, setData] = useState([]);
+    console.log(account);
 
     useEffect(() => {
         const getAccount = async () => {
@@ -33,6 +35,22 @@ export default function Account() {
         getAccount();
     }, [id]);
 
+    useEffect(() => {
+        const getPostsAccount = async () => {
+            try {
+                const res = await fetch(`/api/post/getposts/${id}`);
+                const data = await res.json();
+
+                if (res.ok) {
+                    setData(data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getPostsAccount();
+    }, [id]);
+
     if (cookie) {
         return <CheckCookie />;
     }
@@ -48,7 +66,7 @@ export default function Account() {
     return (
         <div className="flex-1 flex flex-col gap-4">
             <AccountUser account={account} />
-            <Posts posts={account.posts} />
+            {data && <Posts data={data} />}
             <CreatePost />
         </div>
     );
