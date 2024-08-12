@@ -13,6 +13,7 @@ const persistConfig = {
     key: 'root_f16s',
     storage,
     version: 1,
+    blacklist: ['post'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

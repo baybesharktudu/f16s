@@ -1,5 +1,7 @@
 import User from '../models/user.model.js';
 import Post from '../models/post.model.js';
+import Like from '../models/like.model.js';
+import { errorHandler } from '../utils/error.js';
 
 export const account = async (req, res, next) => {
     const { id } = req.params;

@@ -1,5 +1,5 @@
-import { FilePlus2, Minimize2, PencilRuler, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { FilePlus2, Minimize2, PencilRuler, X, PenLine } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase.js';
 import { useDispatch } from 'react-redux';
@@ -7,10 +7,11 @@ import { createPostFailure, createPostStart, createPostSucces } from '../redux/p
 
 export default function CreatePost() {
     const dispatch = useDispatch();
+    const fileRef = useRef();
+
     const [onModal, setOnModal] = useState(false);
     const [picCreate, setPicCreate] = useState(null);
     const [imageDown, setImageDown] = useState(null);
-    const fileRef = useRef();
 
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
@@ -20,6 +21,7 @@ export default function CreatePost() {
         const file = e.target.files[0];
         if (file) {
             setPicCreate(file);
+            setImageUploadError(null);
         }
     };
 
@@ -33,6 +35,7 @@ export default function CreatePost() {
                 },
                 body: JSON.stringify({ ...formData, picturePost: downloadURL }),
             });
+
             const data = await res.json();
 
             if (!res.ok) {
@@ -83,7 +86,7 @@ export default function CreatePost() {
                 },
             );
         } catch (error) {
-            setImageUploadError('Image upload failed');
+            setImageUploadError('Image upload failed < 2MB');
             setImageUploadProgress(null);
             console.log(error);
         }
@@ -92,6 +95,8 @@ export default function CreatePost() {
     const handleCloseModal = () => {
         setOnModal(false);
         setPicCreate(null);
+        setImageDown(null);
+        setImageUploadError(null);
     };
 
     return (
@@ -106,7 +111,9 @@ export default function CreatePost() {
                         onSubmit={handleSubmit}
                         className={`relative flex duration-1000 transition-all ease-linear flex-col gap-4 rounded-lg p-4 w-10/12 border-2 border-[var(--text-color)] sm:w-96 lg:w-[500px] bg-[var(--bg-color)]`}
                     >
-                        <h1 className="text-[var(--main-color)] text-lg">create a post</h1>
+                        <h1 className="text-[var(--main-color)] text-lg">
+                            <PenLine />
+                        </h1>
                         <textarea
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             spellCheck={false}
@@ -144,7 +151,7 @@ export default function CreatePost() {
                                         )}
                                         {imageUploadError && (
                                             <span className="text-[--error-color] leading-none">
-                                                {imageUploadError}
+                                                {imageUploadError} {'(< 2MB)'}
                                             </span>
                                         )}{' '}
                                         {imageDown && (
@@ -154,6 +161,11 @@ export default function CreatePost() {
                                         )}
                                     </button>
                                 </div>
+                            )}
+                            {!picCreate && (
+                                <span className="text-[var(--error-color)]">
+                                    {imageUploadError}
+                                </span>
                             )}
                             <div className="flex-1 flex justify-end">
                                 <button

@@ -8,11 +8,10 @@ import { PencilRuler } from 'lucide-react';
 import LoadingData from '../components/LoadingData';
 
 export default function Home() {
+    const dispatch = useDispatch();
     const [cookie, setCookie] = useState(false);
     const { posts: data, loading } = useSelector((state) => state.post);
     const { loadingCreate } = useSelector((state) => state.post);
-
-    const dispatch = useDispatch();
     useEffect(() => {
         const getPosts = async () => {
             try {
@@ -26,7 +25,6 @@ export default function Home() {
                         setCookie(true);
                     }
                 }
-
                 if (res.ok) {
                     dispatch(getPostSucces(data));
                 }
@@ -35,7 +33,7 @@ export default function Home() {
             }
         };
         getPosts();
-    }, [dispatch]);
+    }, []);
 
     if (cookie) {
         return <CheckCookie />;
@@ -43,7 +41,7 @@ export default function Home() {
 
     return (
         <div className="flex-1 flex flex-col">
-            {data.length === 0 && (
+            {!loadingCreate && !loading && data.length === 0 && (
                 <div className="flex-1 flex justify-center items-center gap-1">
                     <span>No posts yet, please write a new post</span>
                     <button type="button">
@@ -52,7 +50,7 @@ export default function Home() {
                 </div>
             )}
             {loading && <LoadingData />}
-            {data && !loading && <Posts data={data} loading={loadingCreate} />}
+            {data && !loading && <Posts data={data} />}
             <CreatePost />
         </div>
     );

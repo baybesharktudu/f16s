@@ -42,3 +42,33 @@ body::-webkit-scrollbar-track {
 .scroll-post:hover {
     cursor: pointer;
 }
+
+.Toastify__toast {
+    font-family: 'Vazirmatn', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--text-color); /* Màu chữ của toast */
+}
+
+/* Thay đổi màu chữ của toast khi ở trạng thái success */
+.Toastify__toast--success {
+    background-color: var(--sub-alt-color); /* Màu nền của toast khi thành công */
+    color: #25d366;
+}
+
+/* Thay đổi màu chữ của toast khi ở trạng thái error */
+.Toastify__toast--error {
+    background-color: var(--sub-alt-color); /* Màu nền của toast khi lỗi */
+    color: #e94949;
+    display: flex;
+}
+
+.Toastify__close-button {
+    color: var(--sub-alt-color); /* Màu của icon đóng */
+}
+
+.Toastify__toast-body {
+    display: flex;
+    align-items: flex-end;
+}

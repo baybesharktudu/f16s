@@ -1,24 +1,31 @@
 import AccountUser from '../components/AccountUser';
 import Posts from '../components/Posts';
-import CreatePost from '../components/CreatePost';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import WrapperShow from '../components/WrapperShow';
 import CheckCookie from '../components/CheckCookie';
+import { PencilRuler } from 'lucide-react';
+import LoadingData from '../components/LoadingData';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    getPostAccountFailure,
+    getPostAccountStart,
+    getPostAccountSuccess,
+} from '../redux/post/postSlice';
 
 export default function Account() {
+    const dispatch = useDispatch();
     const { id } = useParams();
     const [account, setAccount] = useState(null);
     const [cookie, setCookie] = useState(false);
-    const [data, setData] = useState([]);
-    console.log(account);
+    const [isLoading, setIsLoading] = useState(false);
+    const { posts: data, loading } = useSelector((state) => state.post);
 
     useEffect(() => {
         const getAccount = async () => {
             try {
                 const res = await fetch(`/api/user/account/${id}`);
                 const data = await res.json();
-
                 if (!res.ok) {
                     if (res.status === 401) {
                         setCookie(true);
@@ -33,23 +40,26 @@ export default function Account() {
             }
         };
         getAccount();
-    }, [id]);
+    }, [id, data]);
 
     useEffect(() => {
         const getPostsAccount = async () => {
+            dispatch(getPostAccountStart());
+            setIsLoading(true);
             try {
                 const res = await fetch(`/api/post/getposts/${id}`);
                 const data = await res.json();
 
                 if (res.ok) {
-                    setData(data);
+                    dispatch(getPostAccountSuccess(data));
+                    setIsLoading(false);
                 }
             } catch (error) {
-                console.log(error);
+                dispatch(getPostAccountFailure(error.message));
             }
         };
         getPostsAccount();
-    }, [id]);
+    }, [id, dispatch]);
 
     if (cookie) {
         return <CheckCookie />;
@@ -65,9 +75,17 @@ export default function Account() {
 
     return (
         <div className="flex-1 flex flex-col gap-4">
-            <AccountUser account={account} />
-            {data && <Posts data={data} />}
-            <CreatePost />
+            <AccountUser account={account} data={data} />
+            {!isLoading && !loading && data.length === 0 && (
+                <div className="flex-1 flex justify-center items-center gap-1">
+                    <span>No posts yet, please write a new post</span>
+                    <button type="button">
+                        <PencilRuler className="w-5 h-5 text-[var(--main-color)]" />
+                    </button>
+                </div>
+            )}
+            {loading && <LoadingData />}
+            {!loading && data && <Posts data={data} />}
         </div>
     );
 }

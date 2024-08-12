@@ -6,7 +6,7 @@ import { errorHandler } from '../utils/error.js';
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
 
-    // if (!email || !password) return next(errorHandler(404, 'Fill in all fields'));
+    if (!email || !password) return next(errorHandler(404, 'Fill in all fields'));
 
     try {
         setTimeout(async () => {
