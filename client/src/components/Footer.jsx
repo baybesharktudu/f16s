@@ -1,4 +1,4 @@
-import { CodeXml, MailCheck, Soup, Youtube } from 'lucide-react';
+import { CodeXml, Youtube } from 'lucide-react';
 import { Link } from 'react-router-dom';
 export default function Footer() {
     return (
