@@ -2,7 +2,7 @@ import epxress from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
+import path from 'path';
 // import file
 import authRoute from './routes/auth.route.js';
 import userRoute from './routes/user.route.js';
@@ -17,11 +17,12 @@ mongoose
     .then(() => console.log('MongoDb is connected'))
     .catch((err) => console.log(err));
 
+const __dirname = path.resolve();
+
 // use midlewares
 const app = epxress();
 app.use(epxress.json());
 app.use(cookieParser());
-app.use(cors());
 
 // listen
 const PORT = process.env.PORT || 5556;
@@ -33,6 +34,12 @@ app.listen(PORT, () => {
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/post', postRoute);
+
+app.use(epxress.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 // handle error
 app.use((err, req, res, next) => {
